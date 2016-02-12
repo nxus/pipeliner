@@ -13,17 +13,22 @@ export default class Pipeliner {
   constructor(app) {
     this.app = app
     this._pipelines = {}
+    
     this.app.get('pipeliner').use(this)
     .gather('pipeline')
-    .gather('job')
-
-    this.respond('getPipelines')
+    .gather('task')
+    .respond('getPipelines')
     .respond('getPipeline')
     .respond('run')
     .respond('stages')
+    
+
+    this.app.log.debug('Pipeliner setting up')
   }
 
   pipeline(pipeline) {
+    this.app.log.debug('Creating pipeline')
+    if(this._pipelines[pipeline]) return
     this._pipelines[pipeline] = {
       'collect': [],
       'process': [],
@@ -36,7 +41,8 @@ export default class Pipeliner {
     stages.each(stage => this._pipelines[pipeline][stage] = [])
   }
 
-  job(pipeline, stage, job) {
+  task(pipeline, stage, job) {
+    this.app.log.debug('Registering job', pipeline, stage)
     if(!this._pipelines[pipeline]) this.pipeline(pipeline)
     if(!this._pipelines[pipeline][stage]) this._pipelines[pipeline][stage] = []
     this._pipelines[pipeline][stage].push(job)

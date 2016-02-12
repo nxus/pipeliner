@@ -38,6 +38,7 @@ describe("Pipeliner", () => {
       return app.emit('load').then(() => {
         app.get.calledWith('pipeliner').should.be.true;
         app.get().gather.calledWith('pipeline').should.be.true;
+        app.get().gather.calledWith('task').should.be.true;
       });
     })
 
@@ -87,7 +88,7 @@ describe("Pipeliner", () => {
     it('should register a pipeline job', (done) => {
       app.emit('load').then(() => {
         pipeliner.pipeline('testPipeline')
-        pipeliner.job('testPipeline', 'collect', () => {})
+        pipeliner.task('testPipeline', 'collect', () => {})
         pipeliner._pipelines.should.have.property('testPipeline')
         chai.should().exist(pipeliner._pipelines['testPipeline'])
         pipeliner._pipelines['testPipeline'].should.be.a('object')
@@ -105,7 +106,7 @@ describe("Pipeliner", () => {
     it('should run a pipeline job', (done) => {
       app.emit('load').then(() => {
         pipeliner.pipeline('testPipeline')
-        pipeliner.job('testPipeline', 'collect', done)
+        pipeliner.task('testPipeline', 'collect', done)
         pipeliner.run('testPipeline')
       })
     })
@@ -114,7 +115,7 @@ describe("Pipeliner", () => {
       let args = 'args'
       app.emit('load').then(() => {
         pipeliner.pipeline('testPipeline')
-        pipeliner.job('testPipeline', 'collect', (a) => {
+        pipeliner.task('testPipeline', 'collect', (a) => {
           chai.should().exist(a)
           a.should.equal(args)
           done()
@@ -128,9 +129,9 @@ describe("Pipeliner", () => {
       let increment = () => runtimes++
       app.emit('load').then(() => {
         pipeliner.pipeline('testPipeline')
-        pipeliner.job('testPipeline', 'collect', increment)
-        pipeliner.job('testPipeline', 'process', increment)
-        pipeliner.job('testPipeline', 'generate', () => {
+        pipeliner.task('testPipeline', 'collect', increment)
+        pipeliner.task('testPipeline', 'process', increment)
+        pipeliner.task('testPipeline', 'generate', () => {
           increment(); 
           runtimes.should.equal(3);
           done();
@@ -144,9 +145,9 @@ describe("Pipeliner", () => {
       let job = (d) => {d.runtimes++}
       app.emit('load').then(() => {
         pipeliner.pipeline('testPipeline')
-        pipeliner.job('testPipeline', 'collect', job)
-        pipeliner.job('testPipeline', 'process', job)
-        pipeliner.job('testPipeline', 'generate', (d) => {
+        pipeliner.task('testPipeline', 'collect', job)
+        pipeliner.task('testPipeline', 'process', job)
+        pipeliner.task('testPipeline', 'generate', (d) => {
           chai.should().exist(d)
           d.should.have.property('runtimes')
           d.runtimes.should.be.above(1)
