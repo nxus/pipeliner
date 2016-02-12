@@ -16,7 +16,9 @@
   "license": "MIT",
   "homepage": "",
   "dependencies": {
-    "babel-runtime": "^5.7.0"
+    "babel-runtime": "^5.7.0",
+    "bluebird": "^3.3.0",
+    "underscore": "^1.8.3"
   },
   "peerDependencies": {
     "@nxus/core": "^2.2.0"
