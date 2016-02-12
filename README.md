@@ -44,7 +44,7 @@ Once all the tasks for a pipeline have been defined, the last step is to run the
 
 ### Pipeliner
 
-[src/index.js:31-118](https://github.com/nxus/pipeliner/blob/69056a65774c5c997e0db211dc9c671dbf87bdb1/src/index.js#L31-L118 "Source code on GitHub")
+[src/index.js:31-118](https://github.com/nxus/pipeliner/blob/cd928eeb7ec799d9e12f771a9c3eb1ecad94e2bf/src/index.js#L31-L118 "Source code on GitHub")
 
 **Examples**
 
@@ -65,7 +65,7 @@ pipeliner.run('capitalize', data).then(() => {
 
 #### getPipeline
 
-[src/index.js:99-101](https://github.com/nxus/pipeliner/blob/69056a65774c5c997e0db211dc9c671dbf87bdb1/src/index.js#L99-L101 "Source code on GitHub")
+[src/index.js:99-101](https://github.com/nxus/pipeliner/blob/cd928eeb7ec799d9e12f771a9c3eb1ecad94e2bf/src/index.js#L99-L101 "Source code on GitHub")
 
 Returns a specific pipeline
 
@@ -77,7 +77,7 @@ Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 #### getPipelines
 
-[src/index.js:90-92](https://github.com/nxus/pipeliner/blob/69056a65774c5c997e0db211dc9c671dbf87bdb1/src/index.js#L90-L92 "Source code on GitHub")
+[src/index.js:90-92](https://github.com/nxus/pipeliner/blob/cd928eeb7ec799d9e12f771a9c3eb1ecad94e2bf/src/index.js#L90-L92 "Source code on GitHub")
 
 Returns all pipelines which have been defined
 
@@ -85,7 +85,7 @@ Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 #### pipeline
 
-[src/index.js:52-60](https://github.com/nxus/pipeliner/blob/69056a65774c5c997e0db211dc9c671dbf87bdb1/src/index.js#L52-L60 "Source code on GitHub")
+[src/index.js:52-60](https://github.com/nxus/pipeliner/blob/cd928eeb7ec799d9e12f771a9c3eb1ecad94e2bf/src/index.js#L52-L60 "Source code on GitHub")
 
 Create a new pipeline.
 
@@ -95,7 +95,7 @@ Create a new pipeline.
 
 #### run
 
-[src/index.js:109-117](https://github.com/nxus/pipeliner/blob/69056a65774c5c997e0db211dc9c671dbf87bdb1/src/index.js#L109-L117 "Source code on GitHub")
+[src/index.js:109-117](https://github.com/nxus/pipeliner/blob/cd928eeb7ec799d9e12f771a9c3eb1ecad94e2bf/src/index.js#L109-L117 "Source code on GitHub")
 
 Runs the specified pipeline, passing the arguments to each task.
 
@@ -108,7 +108,7 @@ Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 #### stages
 
-[src/index.js:68-71](https://github.com/nxus/pipeliner/blob/69056a65774c5c997e0db211dc9c671dbf87bdb1/src/index.js#L68-L71 "Source code on GitHub")
+[src/index.js:68-71](https://github.com/nxus/pipeliner/blob/cd928eeb7ec799d9e12f771a9c3eb1ecad94e2bf/src/index.js#L68-L71 "Source code on GitHub")
 
 Define stages for a pipeline
 
@@ -121,7 +121,7 @@ Returns **\[type]** [description]
 
 #### task
 
-[src/index.js:79-84](https://github.com/nxus/pipeliner/blob/69056a65774c5c997e0db211dc9c671dbf87bdb1/src/index.js#L79-L84 "Source code on GitHub")
+[src/index.js:79-84](https://github.com/nxus/pipeliner/blob/cd928eeb7ec799d9e12f771a9c3eb1ecad94e2bf/src/index.js#L79-L84 "Source code on GitHub")
 
 Defintes a task for a pipeline and a stage.
 
