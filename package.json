@@ -1,6 +1,6 @@
 {
   "name": "@nxus/pipeliner",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "A framework for creating and running data pipelines.",
   "main": "lib",
   "scripts": {
