@@ -1,4 +1,6 @@
-# Nxus Pipeliner
+# @nxus/pipeliner
+
+## 
 
 [![Build Status](https://travis-ci.org/nxus/pipeliner.svg?branch=master)](https://travis-ci.org/nxus/pipeliner)
 
@@ -8,23 +10,23 @@ Pipelines take a data object as input, and each task operates on the object in s
 
 For an example of the Pipeliner in action, checkout the [nxus-static-site](https://github.com/seabourne/nxus-static-site) module.
 
-## Installation
+### Installation
 
     > npm install @nxus/pipeliner --save
 
-## Usage
+### Usage
 
-### Step 1: Define a pipeline
+#### Step 1: Define a pipeline
 
     app.get('pipeliner').pipeline('my-pipeline')
 
-### Step 1a: Define stages
+#### Step 1a: Define stages
 
 By default, every pipeline is pre-configured with three stages: 'collect', 'process', 'generate'.  However, you can define your own stages:
 
     app.get('pipliner').stages('my-pipeline', ['stage1', 'stage2', 'stage3'])
 
-### Step 2: Define tasks
+#### Step 2: Define tasks
 
 A task is a javascript function that accepts any objects passed into the pipeline when it is run.
 
@@ -34,7 +36,7 @@ A task is a javascript function that accepts any objects passed into the pipelin
 
     app.get('pipeliner').task('my-pipeline', 'process', myTask)
 
-### Step 3: Run a pipeline
+#### Step 3: Run a pipeline
 
 Once all the tasks for a pipeline have been defined, the last step is to run the pipeline.
 
@@ -42,9 +44,9 @@ Once all the tasks for a pipeline have been defined, the last step is to run the
 
 ## API
 
-### Pipeliner
+* * *
 
-[src/index.js:31-118](https://github.com/nxus/pipeliner/blob/2d44942e9a11720e2588beee6d558a4c166b0b24/src/index.js#L31-L118 "Source code on GitHub")
+## Pipeliner
 
 **Examples**
 
@@ -63,9 +65,7 @@ pipeliner.run('capitalize', data).then(() => {
 })
 ```
 
-#### getPipeline
-
-[src/index.js:99-101](https://github.com/nxus/pipeliner/blob/2d44942e9a11720e2588beee6d558a4c166b0b24/src/index.js#L99-L101 "Source code on GitHub")
+### getPipeline
 
 Returns a specific pipeline
 
@@ -75,17 +75,13 @@ Returns a specific pipeline
 
 Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** The pipeline object.
 
-#### getPipelines
-
-[src/index.js:90-92](https://github.com/nxus/pipeliner/blob/2d44942e9a11720e2588beee6d558a4c166b0b24/src/index.js#L90-L92 "Source code on GitHub")
+### getPipelines
 
 Returns all pipelines which have been defined
 
 Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** A hash of the pipelines.
 
-#### pipeline
-
-[src/index.js:52-60](https://github.com/nxus/pipeliner/blob/2d44942e9a11720e2588beee6d558a4c166b0b24/src/index.js#L52-L60 "Source code on GitHub")
+### pipeline
 
 Create a new pipeline.
 
@@ -93,9 +89,7 @@ Create a new pipeline.
 
 -   `pipeline` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the pipeline to create
 
-#### run
-
-[src/index.js:109-117](https://github.com/nxus/pipeliner/blob/2d44942e9a11720e2588beee6d558a4c166b0b24/src/index.js#L109-L117 "Source code on GitHub")
+### run
 
 Runs the specified pipeline, passing the arguments to each task.
 
@@ -106,9 +100,7 @@ Runs the specified pipeline, passing the arguments to each task.
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** A promise that is executed when the pipeline completes.
 
-#### stages
-
-[src/index.js:68-71](https://github.com/nxus/pipeliner/blob/2d44942e9a11720e2588beee6d558a4c166b0b24/src/index.js#L68-L71 "Source code on GitHub")
+### stages
 
 Define stages for a pipeline
 
@@ -119,9 +111,7 @@ Define stages for a pipeline
 
 Returns **\[type]** [description]
 
-#### task
-
-[src/index.js:79-84](https://github.com/nxus/pipeliner/blob/2d44942e9a11720e2588beee6d558a4c166b0b24/src/index.js#L79-L84 "Source code on GitHub")
+### task
 
 Defintes a task for a pipeline and a stage.
 

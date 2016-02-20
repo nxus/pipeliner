@@ -8,7 +8,7 @@
     "compile": "babel --optional runtime -d lib/ src/",
     "prepublish": "npm run compile",
     "postpublish": "npm run docs-readme && npm run commit-update-docs",
-    "docs-readme": "export NAME=`npm view . name`; export VERSION=`npm view . version`; documentation readme ./src/* --github --name $NAME --project-version $VERSION --readme-file ./README.md -s API",
+    "docs-readme": "export NAME=`npm view . name`; export VERSION=`npm view . version`; documentation readme ./src/*.js --name $NAME --project-version $VERSION --readme-file ./README.md -s $NAME",
     "commit-update-docs": "git add ./README.md && git commit -m 'Updated README API Docs' && git push"
   },
   "repository": {
@@ -33,7 +33,8 @@
     "should": "^7.0.2",
     "sinon": "^1.17.2",
     "chai": "^3.5.0",
-    "chai-as-promised": "^5.2.0"
+    "chai-as-promised": "^5.2.0",
+    "documentation": "^4.0.0-beta"
   },
   "directories": {
     "test": "test"
