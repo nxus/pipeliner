@@ -7,6 +7,7 @@
  * [![Build Status](https://travis-ci.org/nxus/pipeliner.svg?branch=master)](https://travis-ci.org/nxus/pipeliner)
  * 
  * A framework for creating and running data pipelines.  Data pipelines have stages, which are made of an arbitrary number of tasks.  Stages and tasks are run in serial: once a task completes, the next task in the pipeline is executed.  
+ * A task may complete synchronously, or asynchronously through use of a promise. 
  * 
  * Pipelines take a data object as input, and each task operates on the object in some way.
  * 
@@ -90,7 +91,9 @@ export default class Pipeliner {
   }
 
   /**
-   * Create a new pipeline.
+   * Create a new pipeline
+   * configured with three stages: 'collect', 'process', and 'generate'.
+   * Does nothing if the named pipeline already exists.
    * @param  {string} pipeline The name of the pipeline to create
    */
   pipeline(pipeline) {
@@ -104,21 +107,24 @@ export default class Pipeliner {
   }
 
   /**
-   * Define stages for a pipeline
-   * @param  {array} stages   An array of strings, each string being the name of a stage. Stages are executed in the order in the array.
+   * Add stages to a pipeline.
+   * Creates the pipeline if it does not already exist.
    * @param  {string} pipeline The name of the pipeline to use the stages.
-   * @return {[type]}          [description]
+   * @param  {array} stages   An array of strings, each string being the name of a stage. Stages are executed in the order in the array.
    */
-  stages(stages, pipeline) {
+  stages(pipeline, stages) {
     if(!this._pipelines[pipeline]) this.pipeline(pipeline)
     stages.each(stage => this._pipelines[pipeline][stage] = [])
   }
 
   /**
-   * Defintes a task for a pipeline and a stage.
+   * Defines a task for a pipeline and a stage.
+   * Creates the pipeline if it does not already exist;
+   * adds the stage if it does not already exist.
+   * If multiple tasks are defined for a stage, they are run in the order defined.
    * @param  {string} pipeline The name of the pipeline
    * @param  {string} stage    The name of the string
-   * @param  {function} job      A function which accepts data
+   * @param  {function} job      A function which accepts data; an asynchronous task should return a promise that is fulfilled when the task completes
    */
   task(pipeline, stage, job) {
     this.app.log.debug('Registering job', pipeline, stage)
@@ -128,7 +134,7 @@ export default class Pipeliner {
   }
 
   /**
-   * Returns all pipelines which have been defined
+   * Returns all pipelines which have been defined.
    * @return {object} A hash of the pipelines.
    */
   getPipelines() {
@@ -136,7 +142,7 @@ export default class Pipeliner {
   }
 
   /**
-   * Returns a specific pipeline
+   * Returns a specific pipeline.
    * @param  {string} pipeline The name of a pipeline to return.
    * @return {object}          The pipeline object.
    */
@@ -146,9 +152,9 @@ export default class Pipeliner {
 
   /**
    * Runs the specified pipeline, passing the arguments to each task.
-   * @param  {string}    pipeline the pipeline to run
+   * @param  {string}    pipeline The name of the pipeline to run
    * @param  {...object} args     Arguments to pass to the pipeline tasks
-   * @return {Promise}             A promise that is executed when the pipeline completes.
+   * @return {Promise}            A promise that is fulfilled when the pipeline completes; it is rejected if any task in the pipeline fails (throws an error or returns a promise that is rejected)
    */
   run(pipeline, ...args) {
     this.app.log.debug('Running pipeline', pipeline)
