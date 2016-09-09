@@ -11,7 +11,7 @@ import Pipeliner from '../'
 import {application as app} from 'nxus-core'
 
 describe("Pipeliner", () => {
-  var pipeliner, app;
+  var pipeliner;
  
   beforeEach(() => {
     pipeliner = new Pipeliner();
