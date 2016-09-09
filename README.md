@@ -1,4 +1,4 @@
-# @nxus/pipeliner
+# nxus-pipeliner
 
 ## 
 
@@ -12,29 +12,25 @@ For an example of the Pipeliner in action, checkout the [nxus-static-site](https
 
 ### Installation
 
-    > npm install @nxus/pipeliner --save
+    > npm install nxus-pipeliner --save
 
 ### Usage
 
 #### Step 1: Define a pipeline
 
-    app.get('pipeliner').pipeline('my-pipeline')
+    import {pipeliner} from 'nxus-pipeline'
 
-#### Step 1a: Define stages
-
-By default, every pipeline is pre-configured with three stages: 'collect', 'process', 'generate'.  However, you can define your own stages:
-
-    app.get('pipliner').stages('my-pipeline', ['stage1', 'stage2', 'stage3'])
+    pipeliner.pipeline('my-pipeline')
 
 #### Step 2: Define tasks
 
-A task is a javascript function that accepts any objects passed into the pipeline when it is run.
+A task is a javascript function that accepts any objects passed into the pipeline when it is run. Tasks are run serially in FIFO order.
 
     let myTask = (word) => {
       word.toUpperCase();
     }
 
-    app.get('pipeliner').task('my-pipeline', 'process', myTask)
+    app.get('pipeliner').task('my-pipeline', myTask)
 
 #### Step 3: Run a pipeline
 
@@ -48,6 +44,8 @@ Once all the tasks for a pipeline have been defined, the last step is to run the
 
 ## Pipeliner
 
+**Extends NxusModule**
+
 **Examples**
 
 ```javascript
@@ -59,11 +57,33 @@ let data = {word: 'hello'}
 let pipeliner = app.get('pipeliner')
 
 pipeliner.pipeline('capitalize')
-pipeliner.task('capitalize', 'process', myTask)
 pipeliner.run('capitalize', data).then(() => {
   console.log('data') // {word: 'HELLO'}
 })
 ```
+
+### pipeline
+
+Create a new pipeline.
+
+**Parameters**
+
+-   `pipeline` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the pipeline to create
+
+### task
+
+Defintes a task for a pipeline and a stage.
+
+**Parameters**
+
+-   `pipeline` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the pipeline
+-   `job` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** A function which accepts data
+
+### getPipelines
+
+Returns all pipelines which have been defined
+
+Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** A hash of the pipelines.
 
 ### getPipeline
 
@@ -75,20 +95,6 @@ Returns a specific pipeline
 
 Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** The pipeline object.
 
-### getPipelines
-
-Returns all pipelines which have been defined
-
-Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** A hash of the pipelines.
-
-### pipeline
-
-Create a new pipeline.
-
-**Parameters**
-
--   `pipeline` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the pipeline to create
-
 ### run
 
 Runs the specified pipeline, passing the arguments to each task.
@@ -99,24 +105,3 @@ Runs the specified pipeline, passing the arguments to each task.
 -   `args` **...[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** Arguments to pass to the pipeline tasks
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** A promise that is executed when the pipeline completes.
-
-### stages
-
-Define stages for a pipeline
-
-**Parameters**
-
--   `stages` **[array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** An array of strings, each string being the name of a stage. Stages are executed in the order in the array.
--   `pipeline` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the pipeline to use the stages.
-
-Returns **\[type]** [description]
-
-### task
-
-Defintes a task for a pipeline and a stage.
-
-**Parameters**
-
--   `pipeline` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the pipeline
--   `stage` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the string
--   `job` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** A function which accepts data
