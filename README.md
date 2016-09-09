@@ -7,6 +7,7 @@
 [![Build Status](https://travis-ci.org/nxus/pipeliner.svg?branch=master)](https://travis-ci.org/nxus/pipeliner)
 
 A framework for creating and running data pipelines.  Data pipelines have stages, which are made of an arbitrary number of tasks.  Stages and tasks are run in serial: once a task completes, the next task in the pipeline is executed.  
+A task may complete synchronously, or asynchronously through use of a promise. 
 
 Pipelines take a data object as input, and each task operates on the object in some way.
 
@@ -66,7 +67,9 @@ pipeliner.run('capitalize', data).then(() => {
 
 ### pipeline
 
-Create a new pipeline.
+Create a new pipeline
+configured with three stages: 'collect', 'process', and 'generate'.
+Does nothing if the named pipeline already exists.
 
 **Parameters**
 
@@ -74,7 +77,10 @@ Create a new pipeline.
 
 ### task
 
-Defintes a task for a pipeline and a stage.
+Defines a task for a pipeline and a stage.
+Creates the pipeline if it does not already exist;
+adds the stage if it does not already exist.
+If multiple tasks are defined for a stage, they are run in the order defined.
 
 **Parameters**
 
@@ -83,13 +89,13 @@ Defintes a task for a pipeline and a stage.
 
 ### getPipelines
 
-Returns all pipelines which have been defined
+Returns all pipelines which have been defined.
 
 Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** A hash of the pipelines.
 
 ### getPipeline
 
-Returns a specific pipeline
+Returns a specific pipeline.
 
 **Parameters**
 
@@ -103,7 +109,7 @@ Runs the specified pipeline, passing the arguments to each task.
 
 **Parameters**
 
--   `pipeline` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** the pipeline to run
+-   `pipeline` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of the pipeline to run
 -   `args` **...[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** Arguments to pass to the pipeline tasks
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** A promise that is executed when the pipeline completes.
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** A promise that is fulfilled when the pipeline completes; it is rejected if any task in the pipeline fails (throws an error or returns a promise that is rejected)
