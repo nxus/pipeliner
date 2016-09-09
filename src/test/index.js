@@ -100,5 +100,23 @@ describe("Pipeliner", () => {
       })
       pipeliner.run('testPipeline', data)
     })
+
+    it('should return a promise that resolves upon success', (done) => {
+      pipeliner.pipeline('testPipeline')
+      pipeliner.task('testPipeline', () => {})
+      pipeliner.run('testPipeline').then(() => {
+        done()
+      })
+    })
+
+    it('should throw a catchable error', (done) => {
+      pipeliner.pipeline('testPipeline')
+      pipeliner.task('testPipeline', () => {
+        throw new Error('error')
+      })
+      pipeliner.run('testPipeline').catch(() => {
+        done()
+      })
+    })
   })
 });

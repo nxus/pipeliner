@@ -125,7 +125,7 @@ class Pipeliner extends NxusModule {
   run(pipeline, ...args) {
     this.log.debug('Running pipeline', pipeline)
     if(!this._pipelines[pipeline]) throw new Error('The specified pipeline \''+pipeline+'\' doesn\'t exist.')
-    return Promise.mapSeries(this._pipelines[pipeline], job => Promise.resolve(job(...args)))
+    return Promise.mapSeries(this._pipelines[pipeline], job => job(...args))
   }
 } 
 
