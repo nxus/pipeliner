@@ -9,6 +9,7 @@
  * [![Build Status](https://travis-ci.org/nxus/pipeliner.svg?branch=master)](https://travis-ci.org/nxus/pipeliner)
  * 
  * A framework for creating and running data pipelines.  Data pipelines have stages, which are made of an arbitrary number of tasks.  Stages and tasks are run in serial: once a task completes, the next task in the pipeline is executed.  
+ * A task may complete synchronously, or asynchronously through use of a promise. 
  * 
  * Pipelines take a data object as input, and each task operates on the object in some way.
  * 
@@ -81,7 +82,9 @@ class Pipeliner extends NxusModule {
   }
 
   /**
-   * Create a new pipeline.
+   * Create a new pipeline
+   * configured with three stages: 'collect', 'process', and 'generate'.
+   * Does nothing if the named pipeline already exists.
    * @param  {string} pipeline The name of the pipeline to create
    */
   pipeline(pipeline) {
@@ -91,7 +94,10 @@ class Pipeliner extends NxusModule {
   }
 
   /**
-   * Defintes a task for a pipeline and a stage.
+   * Defines a task for a pipeline and a stage.
+   * Creates the pipeline if it does not already exist;
+   * adds the stage if it does not already exist.
+   * If multiple tasks are defined for a stage, they are run in the order defined.
    * @param  {string} pipeline The name of the pipeline
    * @param  {function} job      A function which accepts data
    */
@@ -102,7 +108,7 @@ class Pipeliner extends NxusModule {
   }
 
   /**
-   * Returns all pipelines which have been defined
+   * Returns all pipelines which have been defined.
    * @return {object} A hash of the pipelines.
    */
   getPipelines() {
@@ -110,7 +116,7 @@ class Pipeliner extends NxusModule {
   }
 
   /**
-   * Returns a specific pipeline
+   * Returns a specific pipeline.
    * @param  {string} pipeline The name of a pipeline to return.
    * @return {object}          The pipeline object.
    */
@@ -120,9 +126,9 @@ class Pipeliner extends NxusModule {
 
   /**
    * Runs the specified pipeline, passing the arguments to each task.
-   * @param  {string}    pipeline the pipeline to run
+   * @param  {string}    pipeline The name of the pipeline to run
    * @param  {...object} args     Arguments to pass to the pipeline tasks
-   * @return {Promise}             A promise that is executed when the pipeline completes.
+   * @return {Promise}            A promise that is fulfilled when the pipeline completes; it is rejected if any task in the pipeline fails (throws an error or returns a promise that is rejected)
    */
   run(pipeline, ...args) {
     this.log.debug('Running pipeline', pipeline)
