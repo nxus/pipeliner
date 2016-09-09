@@ -1,7 +1,7 @@
 /* 
 * @Author: Mike Reich
 * @Date:   2016-02-05 07:45:34
-* @Last Modified 2016-02-20
+* @Last Modified 2016-09-09
 */
 /**
  * [![Build Status](https://travis-ci.org/nxus/pipeliner.svg?branch=master)](https://travis-ci.org/nxus/pipeliner)
@@ -14,29 +14,26 @@
  * 
  * ## Installation
  * 
- *     > npm install @nxus/pipeliner --save
+ *     > npm install nxus-pipeliner --save
  * 
  * ## Usage
  * 
  * ### Step 1: Define a pipeline
+ *
+ *     import {pipeliner} from 'nxus-pipeline'
  * 
- *     app.get('pipeliner').pipeline('my-pipeline')
+ *     pipeliner.pipeline('my-pipeline')
  * 
- * ### Step 1a: Define stages
- * 
- * By default, every pipeline is pre-configured with three stages: 'collect', 'process', 'generate'.  However, you can define your own stages:
- * 
- *     app.get('pipliner').stages('my-pipeline', ['stage1', 'stage2', 'stage3'])
  * 
  * ### Step 2: Define tasks
  * 
- * A task is a javascript function that accepts any objects passed into the pipeline when it is run.
+ * A task is a javascript function that accepts any objects passed into the pipeline when it is run. Tasks are run serially in FIFO order.
  * 
  *     let myTask = (word) => {
  *       word.toUpperCase();
  *     }
  * 
- *     app.get('pipeliner').task('my-pipeline', 'process', myTask)
+ *     app.get('pipeliner').task('my-pipeline', myTask)
  * 
  * ### Step 3: Run a pipeline
  * 
@@ -53,6 +50,8 @@
 import Promise from 'bluebird'
 import _ from 'underscore'
 
+import {application as app, NxusModule} from 'nxus-core'
+
 /**
  * @class The Pipeliner class is a Nxus module for creating and running data pipelines. 
  * Pipelines can have any number of stages, and stages can have any number of tasks.
@@ -66,27 +65,17 @@ import _ from 'underscore'
  * let pipeliner = app.get('pipeliner')
  * 
  * pipeliner.pipeline('capitalize')
- * pipeliner.task('capitalize', 'process', myTask)
  * pipeliner.run('capitalize', data).then(() => {
  *   console.log('data') // {word: 'HELLO'}
  * })
  * 
  */
-export default class Pipeliner {
+class Pipeliner extends NxusModule {
   constructor(app) {
-    this.app = app
-    this._pipelines = {}
-    
-    this.app.get('pipeliner').use(this)
-    .gather('pipeline')
-    .gather('task')
-    .respond('getPipelines')
-    .respond('getPipeline')
-    .respond('run')
-    .respond('stages')
-    
+    super()
+    this._pipelines = {}    
 
-    this.app.log.debug('Pipeliner setting up')
+    this.log.debug('Pipeliner setting up')
   }
 
   /**
@@ -94,37 +83,20 @@ export default class Pipeliner {
    * @param  {string} pipeline The name of the pipeline to create
    */
   pipeline(pipeline) {
-    this.app.log.debug('Creating pipeline')
+    this.log.debug('Creating pipeline')
     if(this._pipelines[pipeline]) return
-    this._pipelines[pipeline] = {
-      'collect': [],
-      'process': [],
-      'generate': []
-    }
-  }
-
-  /**
-   * Define stages for a pipeline
-   * @param  {array} stages   An array of strings, each string being the name of a stage. Stages are executed in the order in the array.
-   * @param  {string} pipeline The name of the pipeline to use the stages.
-   * @return {[type]}          [description]
-   */
-  stages(stages, pipeline) {
-    if(!this._pipelines[pipeline]) this.pipeline(pipeline)
-    stages.each(stage => this._pipelines[pipeline][stage] = [])
+    this._pipelines[pipeline] = []
   }
 
   /**
    * Defintes a task for a pipeline and a stage.
    * @param  {string} pipeline The name of the pipeline
-   * @param  {string} stage    The name of the string
    * @param  {function} job      A function which accepts data
    */
-  task(pipeline, stage, job) {
-    this.app.log.debug('Registering job', pipeline, stage)
+  task(pipeline, job) {
+    this.log.debug('Registering job', pipeline)
     if(!this._pipelines[pipeline]) this.pipeline(pipeline)
-    if(!this._pipelines[pipeline][stage]) this._pipelines[pipeline][stage] = []
-    this._pipelines[pipeline][stage].push(job)
+    this._pipelines[pipeline].push(job)
   }
 
   /**
@@ -151,12 +123,11 @@ export default class Pipeliner {
    * @return {Promise}             A promise that is executed when the pipeline completes.
    */
   run(pipeline, ...args) {
-    this.app.log.debug('Running pipeline', pipeline)
+    this.log.debug('Running pipeline', pipeline)
     if(!this._pipelines[pipeline]) throw new Error('The specified pipeline \''+pipeline+'\' doesn\'t exist.')
-    let _jobs = []
-    for (let stage in this._pipelines[pipeline]) {
-      _jobs = _jobs.concat(this._pipelines[pipeline][stage])
-    }
-    return Promise.mapSeries(_jobs, (job) => {return Promise.resolve(job(...args))})
+    return Promise.mapSeries(this._pipelines[pipeline], job => Promise.resolve(job(...args)))
   }
 } 
+
+var pipeliner = Pipeliner.getProxy()
+export {Pipeliner as default, pipeliner}
